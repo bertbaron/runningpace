@@ -1,0 +1,107 @@
+/* No spinners */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance: textfield; /* Firefox */
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.container {
+    display: inline-flex;
+    flex-direction: column;
+    align-items:
+            center;
+    justify-content: center;
+    gap: 8px;
+    /*border: #4d4d4d solid 1px;*/
+    /*border-radius: 5px;*/
+    padding: 10px;
+}
+
+.input-row {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    /*justify-content: center;*/
+    /*margin-bottom: 20px;*/
+}
+
+.input-row .col-1 {
+    width: 100px;
+    /*border: cornflowerblue solid 1px;*/
+    /*justify-content: left;*/
+}
+.input-row .col-2 {
+    width: 110px;
+    /*margin-right: 8px;*/
+}
+.input-row .col-3 {
+    width: 100px;
+}
+
+.time-field {
+    display: inline-flex;
+    /*    border: 1px solid #ccc;*/
+    /*    border-radius: 5px;*/
+    /*    padding: 5px;*/
+}
+
+.time-field input {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: inherit;
+    text-align: center;
+    width: 26px;
+    padding: 0;
+}
+
+.time-field span {
+    padding: 0 5px;
+    font-weight: bold;
+    font-size: inherit;
+}
+
+.input-field {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.focus {
+    box-shadow: 0 0 10px #719ECE;
+}
+
+.input-field:focus {
+    outline: none !important;
+    box-shadow: 0 0 10px #719ECE;
+}
+
+
+.input-field.derived {
+    border-color: #8a8f00;
+    background-color: #fdffcc;
+}
+
+.input-field.derived input {
+    color: #4d4d4d;
+}
+
+#distance {
+    text-align: right;
+    font-size: inherit;
+}

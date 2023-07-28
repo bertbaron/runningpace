@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Running Pace Calculator</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="app">
+    <h1>Running Pace Calculator</h1>
+    <div class="container">
+        <div class="input-row">
+            <label class="col-1" for="distance">distance</label>
+            <input class="col-2 input-field" type="number" id="distance" maxLength="4"/>
+            <select class="col-3 input-field" id="distance_unit">
+                <option value="km">kilometers</option>
+                <option value="mile">miles</option>
+                <option value="meter">meters</option>
+                <option value="yard">yards</option>
+                <option value="foot">feet</option>
+            </select>
+        </div>
+        <div class="input-row">
+            <label class="col-1">pace</label>
+            <div class="col-2 input-field time-field" id="pace_time">
+                <input class="digits" type="number" id="pace_hours" maxLength="2" placeholder="HH"/>
+                <span>:</span>
+                <input class="digits zeropad" type="number" id="pace_minutes" maxLength="2" placeholder="mm"/>
+                <span>:</span>
+                <input class="digits zeropad" type="number" id="pace_seconds" maxLength="2" placeholder="ss"/>
+            </div>
+            <select class="col-3 input-field" id="pace_unit">
+                <option value="km">per km</option>
+                <option value="mile">per mile</option>
+            </select>
+        </div>
+        <div class="input-row">
+            <label class="col-1">time</label>
+            <div class="col-2 input-field time-field" id="race_time">
+                <input class="digits" type="number" id="time_hours" maxLength="2" placeholder="HH"/>
+                <span>:</span>
+                <input class="digits zeropad" type="number" id="time_minutes" maxLength="2" placeholder="mm"/>
+                <span>:</span>
+                <input class="digits zeropad" type="number" id="time_seconds" maxLength="2" placeholder="ss"/>
+            </div>
+            <div class="col-3"></div>
+        </div>
+    </div>
+</div>
+<script src="runningpace.js" type="text/javascript"></script>
+</body>
+</html>
