@@ -15,7 +15,7 @@ class DistanceInput {
 
         selectOnClick(this.distancefield);
         onBlur(this.onUpdate.bind(this), this.distancefield);
-        onLongPress(this.clear.bind(this), this.distancefield);
+        onClear(this.clear.bind(this), this.distancefield);
         this.unitfield.addEventListener('change', this.onUnitUpdate.bind(this));
     }
 
@@ -64,7 +64,7 @@ class DistanceInput {
         let paceInSecondsPerKm = paceInput.getPaceInSecondsPerKm();
         let distanceInKm = timeInSeconds / paceInSecondsPerKm;
         let distance = fromKm(distanceInKm, this.unitfield.value);
-        this.distancefield.value = Math.round(distance * 100) / 100;
+        this.distancefield.value = distance.toFixed(2);
         this.value = this.distancefield.value;
     }
 }
@@ -83,7 +83,7 @@ class PaceInput {
         zeropad(this.hourfield, this.minutefield, this.secondfield);
         parentFocus(this.timefield, this.hourfield, this.minutefield, this.secondfield);
         onBlur(this.onUpdate.bind(this), this.hourfield, this.minutefield, this.secondfield);
-        onLongPress(this.clear.bind(this), this.hourfield, this.minutefield, this.secondfield);
+        onClear(this.clear.bind(this), this.hourfield, this.minutefield, this.secondfield);
         this.unitfield.addEventListener('change', this.onUnitUpdate.bind(this));
     }
 
@@ -171,7 +171,7 @@ class TimeInput {
         zeropad(this.hourfield, this.minutefield, this.secondfield);
         parentFocus(this.timefield, this.hourfield, this.minutefield, this.secondfield);
         onBlur(this.onUpdate.bind(this), this.hourfield, this.minutefield, this.secondfield);
-        onLongPress(this.clear.bind(this), this.hourfield, this.minutefield, this.secondfield);
+        onClear(this.clear.bind(this), this.hourfield, this.minutefield, this.secondfield);
     }
 
     get isEmpty() {
@@ -256,34 +256,42 @@ function onBlur(fn, ...elements) {
     }
 }
 
-let longPressTimeout = null;
-let longPressed = false;
-function onLongPress(fn, ...elements) {
+function onClear(fn, ...elements) {
+    // if Esc is pressed on one of the elements, call fn
     for (let element of elements) {
-        element.addEventListener('mousedown', function (event) {
-            longPressTimeout = setTimeout(function () {
+        element.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
                 fn(event);
-                element.blur();
-                longPressed = true;
-            }, 500);
-        });
-        element.addEventListener('mouseup', function (event) {
-            clearTimeout(longPressTimeout);
-            console.log(`Mouseup`)
-        });
-        element.addEventListener('mouseleave', function (event) {
-            clearTimeout(longPressTimeout);
-            console.log(`Mouseleave`)
-        });
-        element.addEventListener('click', function (event) {
-            if (longPressed) {
-                console.log('Click!');
-                event.preventDefault();
-                element.blur();
-                longPressed = false;
             }
         });
     }
+
+
+    // for (let element of elements) {
+    //     element.addEventListener('mousedown', function (event) {
+    //         longPressTimeout = setTimeout(function () {
+    //             fn(event);
+    //             element.blur();
+    //             longPressed = true;
+    //         }, 500);
+    //     });
+    //     element.addEventListener('mouseup', function (event) {
+    //         clearTimeout(longPressTimeout);
+    //         console.log(`Mouseup`)
+    //     });
+    //     element.addEventListener('mouseleave', function (event) {
+    //         clearTimeout(longPressTimeout);
+    //         console.log(`Mouseleave`)
+    //     });
+    //     element.addEventListener('click', function (event) {
+    //         if (longPressed) {
+    //             console.log('Click!');
+    //             event.preventDefault();
+    //             element.blur();
+    //             longPressed = false;
+    //         }
+    //     });
+    // }
 }
 
 function selectOnClick(...elements) {

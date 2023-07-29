@@ -10,6 +10,21 @@ input[type=number] {
     -moz-appearance: textfield; /* Firefox */
 }
 
+body {
+    margin: 0;
+}
+
+.heading {
+    text-align: center;
+    background-color: #e9ecef;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.heading h1 {
+    padding: 0;
+}
+
 .app {
     display: flex;
     flex-direction: column;
