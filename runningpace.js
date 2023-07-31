@@ -13,7 +13,7 @@ class DistanceInput {
         this._derived = false;
         this.value = distancefield.value;
 
-        selectOnClick(this.distancefield);
+        selectOnFocus(this.distancefield);
         onBlur(this.onUpdate.bind(this), this.distancefield);
         onClear(this.clear.bind(this), false, this.distancefield);
         this.unitfield.addEventListener('change', this.onUnitUpdate.bind(this));
@@ -79,7 +79,7 @@ class PaceInput {
         this._derived = false;
         this.value = `${this.minutefield.value}:${this.secondfield.value}`
 
-        selectOnClick(this.minutefield, this.secondfield);
+        selectOnFocus(this.minutefield, this.secondfield);
         zeropad(this.minutefield, this.secondfield);
         parentFocus(this.timefield, this.minutefield, this.secondfield);
         onBlur(this.onUpdate.bind(this), this.minutefield, this.secondfield);
@@ -163,7 +163,7 @@ class TimeInput {
         this._derived = false;
         this.value = `${this.hourfield.value}:${this.minutefield.value}:${this.secondfield.value}`
 
-        selectOnClick(this.hourfield, this.minutefield, this.secondfield);
+        selectOnFocus(this.hourfield, this.minutefield, this.secondfield);
         zeropad(this.hourfield, this.minutefield, this.secondfield);
         parentFocus(this.timefield, this.hourfield, this.minutefield, this.secondfield);
         onBlur(this.onUpdate.bind(this), this.hourfield, this.minutefield, this.secondfield);
@@ -279,9 +279,9 @@ function onClear(fn, includeDot, ...elements) {
     }
 }
 
-function selectOnClick(...elements) {
+function selectOnFocus(...elements) {
     for (let element of elements) {
-        element.addEventListener('click', function () {
+        element.addEventListener('focus', function () {
             element.select();
         });
     }

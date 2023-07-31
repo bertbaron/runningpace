@@ -24,7 +24,7 @@
     <div class="container">
         <div class="input-row">
             <label class="col-1" for="distance">Distance</label>
-            <input class="col-2 input-field" type="text" inputmode="numeric" pattern="[0-9]*" id="distance" maxLength="4"/>
+            <input class="col-2 input-field" type="text" inputmode="numeric" pattern="[0-9\-.]*" id="distance" maxLength="4"/>
             <select class="col-3 input-field" id="distance_unit">
                 <option value="km">kilometers</option>
                 <option value="mile">miles</option>
@@ -36,9 +36,9 @@
         <div class="input-row">
             <label class="col-1">Pace</label>
             <div class="col-2 input-field time-field" id="pace_time">
-                <input class="digits zeropad" type="text" inputmode="numeric" pattern="[0-9]*" id="pace_minutes" maxLength="2" placeholder="mm"/>
+                <input class="digits zeropad" type="text" inputmode="numeric" pattern="[0-9\-.]*" id="pace_minutes" maxLength="2" placeholder="mm"/>
                 <span>:</span>
-                <input class="digits zeropad" type="text" inputmode="numeric" pattern="[0-9]*" id="pace_seconds" maxLength="2" placeholder="ss"/>
+                <input class="digits zeropad" type="text" inputmode="numeric" pattern="[0-9\-.]*" id="pace_seconds" maxLength="2" placeholder="ss"/>
             </div>
             <select class="col-3 input-field" id="pace_unit">
                 <option value="km">per km</option>
@@ -48,11 +48,11 @@
         <div class="input-row">
             <label class="col-1">Time</label>
             <div class="col-2 input-field time-field" id="race_time">
-                <input class="digits" type="text" inputmode="numeric" pattern="[0-9]*" id="time_hours" maxLength="2" placeholder="HH"/>
+                <input class="digits" type="text" inputmode="numeric" pattern="[0-9\-.]*" id="time_hours" maxLength="2" placeholder="HH"/>
                 <span>:</span>
-                <input class="digits zeropad" type="text" inputmode="numeric" pattern="[0-9]*" id="time_minutes" maxLength="2" placeholder="mm"/>
+                <input class="digits zeropad" type="text" inputmode="numeric" pattern="[0-9\-.]*" id="time_minutes" maxLength="2" placeholder="mm"/>
                 <span>:</span>
-                <input class="digits zeropad" type="text" inputmode="numeric" pattern="[0-9]*" id="time_seconds" maxLength="2" placeholder="ss"/>
+                <input class="digits zeropad" type="text" inputmode="numeric" pattern="[0-9\-.]*" id="time_seconds" maxLength="2" placeholder="ss"/>
             </div>
             <div class="col-3"></div>
         </div>
