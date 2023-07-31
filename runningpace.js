@@ -63,7 +63,7 @@ class DistanceInput {
         let paceInSecondsPerKm = paceInput.getPaceInSecondsPerKm();
         let distanceInKm = timeInSeconds / paceInSecondsPerKm;
         let distance = fromKm(distanceInKm, this.unitfield.value);
-        this.distancefield.value = distance.toFixed(2);
+        this.distancefield.value = distance.toFixed(2).replace(/\.?0+$/, '');
         this.value = this.distancefield.value;
     }
 }
