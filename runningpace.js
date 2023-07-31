@@ -276,14 +276,14 @@ function onClear(fn, includeDot, ...elements) {
 }
 
 function selectOnFocus(...elements) {
-    for (let element of elements) {
-        element.addEventListener('focus', function (event) {
-            element.select();
-        });
-        element.addEventListener('contextmenu', function (event) {
-            event.preventDefault();
-        });
-    }
+    // for (let element of elements) {
+    //     element.addEventListener('focus', function (event) {
+    //         element.select();
+    //     });
+    //     element.addEventListener('contextmenu', function (event) {
+    //         event.preventDefault();
+    //     });
+    // }
 }
 
 function zeropad(...elements) {
