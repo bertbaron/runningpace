@@ -133,3 +133,12 @@ label {
     text-align: right;
     font-size: inherit;
 }
+
+kbd {
+    display: inline-block;
+    padding: 2px 5px;
+    border: 1px solid #999;
+    border-radius: 3px;
+    background-color: #f7f7f7;
+    font-family: monospace;
+}
