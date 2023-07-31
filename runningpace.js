@@ -266,16 +266,16 @@ function onClear(fn, includeDot, ...elements) {
             }
         });
 
-        // It looks like this is needed for mobile devices
-        element.addEventListener('input', function (event) {
-            if (element.value.includes('-') || includeDot && element.value.includes('.')) {
-                console.log(`replacing`)
-                element.value = element.value.replace('-', '').replace('.', '');
-                event.preventDefault();
-                fn(event);
-                element.blur();
-            }
-        });
+        // // It looks like this is needed for mobile devices
+        // element.addEventListener('input', function (event) {
+        //     if (element.value.includes('-') || includeDot && element.value.includes('.')) {
+        //         console.log(`replacing`)
+        //         element.value = element.value.replace('-', '').replace('.', '');
+        //         event.preventDefault();
+        //         fn(event);
+        //         element.blur();
+        //     }
+        // });
     }
 }
 
