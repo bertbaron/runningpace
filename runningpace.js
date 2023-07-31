@@ -15,7 +15,7 @@ class DistanceInput {
 
         selectOnFocus(this.distancefield);
         onBlur(this.onUpdate.bind(this), this.distancefield);
-        onClear(this.clear.bind(this), false, this.distancefield);
+        onClear(this.clear.bind(this), this.distancefield);
         this.unitfield.addEventListener('change', this.onUnitUpdate.bind(this));
     }
 
@@ -81,7 +81,7 @@ class PaceInput {
         zeropad(this.minutefield, this.secondfield);
         parentFocus(this.timefield, this.minutefield, this.secondfield);
         onBlur(this.onUpdate.bind(this), this.minutefield, this.secondfield);
-        onClear(this.clear.bind(this), true, this.minutefield, this.secondfield);
+        onClear(this.clear.bind(this), this.timefield, this.minutefield, this.secondfield);
         this.unitfield.addEventListener('change', this.onUnitUpdate.bind(this));
     }
 
@@ -164,7 +164,7 @@ class TimeInput {
         zeropad(this.hourfield, this.minutefield, this.secondfield);
         parentFocus(this.timefield, this.hourfield, this.minutefield, this.secondfield);
         onBlur(this.onUpdate.bind(this), this.hourfield, this.minutefield, this.secondfield);
-        onClear(this.clear.bind(this), true, this.hourfield, this.minutefield, this.secondfield);
+        onClear(this.clear.bind(this), this.timefield, this.hourfield, this.minutefield, this.secondfield);
     }
 
     get isEmpty() {
@@ -250,7 +250,7 @@ function onBlur(fn, ...elements) {
 
 let longPressTimeout;
 let longPressed = false;
-function onClear(fn, includeDot, ...elements) {
+function onClear(fn, ...elements) {
     for (let element of elements) {
         element.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
@@ -282,31 +282,6 @@ function onClear(fn, includeDot, ...elements) {
             }
         });
     }
-
-    // for (let element of elements) {
-    //     element.addEventListener('keydown', function (event) {
-    //         if (event.key === 'Escape' || event.key === '-' || includeDot && event.key === '.') {
-    //             fn(event);
-    //             element.blur();
-    //         }
-    //     });
-    //     element.addEventListener('keypress', function (event) {
-    //         if (event.key === '-' || includeDot && event.key === '.') {
-    //             event.preventDefault();
-    //         }
-    //     });
-    //
-    //     // It looks like this is needed for some mobile devices
-    //     element.addEventListener('input', function (event) {
-    //         if (element.value.includes('-') || includeDot && element.value.includes('.')) {
-    //             console.log(`replacing`)
-    //             element.value = element.value.replace('-', '').replace('.', '');
-    //             event.preventDefault();
-    //             fn(event);
-    //             element.blur();
-    //         }
-    //     });
-    // }
 }
 
 function selectOnFocus(...elements) {
