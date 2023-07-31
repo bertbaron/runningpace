@@ -81,7 +81,7 @@ class PaceInput {
         zeropad(this.minutefield, this.secondfield);
         parentFocus(this.timefield, this.minutefield, this.secondfield);
         onBlur(this.onUpdate.bind(this), this.minutefield, this.secondfield);
-        onClear(this.clear.bind(this), this.timefield);
+        onClear(this.clear.bind(this), this.timefield, this.minutefield, this.secondfield);
         this.unitfield.addEventListener('change', this.onUnitUpdate.bind(this));
     }
 
@@ -164,7 +164,7 @@ class TimeInput {
         zeropad(this.hourfield, this.minutefield, this.secondfield);
         parentFocus(this.timefield, this.hourfield, this.minutefield, this.secondfield);
         onBlur(this.onUpdate.bind(this), this.hourfield, this.minutefield, this.secondfield);
-        onClear(this.clear.bind(this), this.timefield);
+        onClear(this.clear.bind(this), this.timefield, this.hourfield, this.minutefield, this.secondfield);
     }
 
     get isEmpty() {
@@ -250,6 +250,8 @@ function onBlur(fn, ...elements) {
 
 let longPressTimeout;
 let longPressed = false;
+// let releaseTimestamp;
+
 function onClear(fn, ...elements) {
     for (let element of elements) {
         element.addEventListener('keydown', function (event) {
@@ -260,11 +262,12 @@ function onClear(fn, ...elements) {
         });
         for (let eventType of ['mousedown', 'touchstart']) {
             element.addEventListener(eventType, function (event) {
-                console.log(`event: ${eventType} on ${event.target.id}, setting timeout`)
+                // console.log(`event: ${eventType} on ${event.target.id}, setting timeout`)
                 clearTimeout(longPressTimeout) // for robustness
                 longPressTimeout = setTimeout(function () {
                     fn(event);
-                    console.log(`long-press timeout, blurring`)
+                    event.stopPropagation();
+                    // console.log(`long-press timeout, blurring`)
                     element.blur();
                     longPressed = true;
                 }, 500);
@@ -272,22 +275,26 @@ function onClear(fn, ...elements) {
         }
         for (let eventType of ['mouseup', 'touchend', 'mouseleave', 'touchcancel']) {
             element.addEventListener(eventType, function (event) {
-                console.log(`event: ${eventType}, canceling timeout`)
-                // if (longPressed) {
-                //     element.blur(); // FIXME mark as done, but with longPressed=false event below is not triggered
-                // }
+                // console.log(`event: ${eventType} @ ${event.timeStamp}`)
+                if (longPressed) {
+                    element.blur();
+                    event.stopPropagation();
+                    event.preventDefault();
+                    element.blur();
+                    longPressed = false;
+                    // releaseTimestamp = event.timeStamp;
+                }
                 clearTimeout(longPressTimeout);
             });
         }
-        element.addEventListener('click', function (event) {
-            console.log(`event: click`)
-            if (longPressed) {
-                console.log(`longPressed, blurring`)
-                event.preventDefault();
-                element.blur();
-                longPressed = false;
-            }
-        });
+        // element.addEventListener('click', function (event) {
+        //     console.log(`event: click @ ${event.timeStamp}`)
+            // if (event.timeStamp === releaseTimestamp) {
+            //     console.log(`click immediately after release, blurring`)
+            //     event.preventDefault();
+            //     element.blur();
+            // }
+        // });
     }
 }
 
@@ -338,7 +345,7 @@ function recalculate() {
         // If there is a non-derived input empty, clear derived flag
         let nonDerivedEmptyInputs = INPUTS.filter(input => !input.derived && input.isEmpty);
         if (nonDerivedEmptyInputs.length > 0) {
-            console.log(`Clearing derived flag for ${derivedInput.constructor.name}`);
+            // console.log(`Clearing derived flag for ${derivedInput.constructor.name}`);
             derivedInput.derived = false;
             derivedInput = null;
         }
