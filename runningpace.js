@@ -15,7 +15,7 @@ class DistanceInput {
 
         selectOnClick(this.distancefield);
         onBlur(this.onUpdate.bind(this), this.distancefield);
-        onClear(this.clear.bind(this), this.distancefield);
+        onClear(this.clear.bind(this), false, this.distancefield);
         this.unitfield.addEventListener('change', this.onUnitUpdate.bind(this));
     }
 
@@ -70,32 +70,31 @@ class DistanceInput {
 }
 
 class PaceInput {
-    constructor(timefield, hourfield, minutefield, secondfield, unitfield) {
+    constructor(timefield, minutefield, secondfield, unitfield) {
         this.timefield = timefield; // the wrapper element
-        this.hourfield = hourfield;
+        // this.hourfield = hourfield;
         this.minutefield = minutefield;
         this.secondfield = secondfield;
         this.unitfield = unitfield;
         this._derived = false;
-        this.value = `${this.hourfield.value}:${this.minutefield.value}:${this.secondfield.value}`
+        this.value = `${this.minutefield.value}:${this.secondfield.value}`
 
-        selectOnClick(this.hourfield, this.minutefield, this.secondfield);
-        zeropad(this.hourfield, this.minutefield, this.secondfield);
-        parentFocus(this.timefield, this.hourfield, this.minutefield, this.secondfield);
-        onBlur(this.onUpdate.bind(this), this.hourfield, this.minutefield, this.secondfield);
-        onClear(this.clear.bind(this), this.hourfield, this.minutefield, this.secondfield);
+        selectOnClick(this.minutefield, this.secondfield);
+        zeropad(this.minutefield, this.secondfield);
+        parentFocus(this.timefield, this.minutefield, this.secondfield);
+        onBlur(this.onUpdate.bind(this), this.minutefield, this.secondfield);
+        onClear(this.clear.bind(this), true, this.minutefield, this.secondfield);
         this.unitfield.addEventListener('change', this.onUnitUpdate.bind(this));
     }
 
     get isEmpty() {
-        return this.hourfield.value === '' && this.minutefield.value === '' && this.secondfield.value === '';
+        return this.minutefield.value === '' && this.secondfield.value === '';
     }
 
     getPaceInSecondsPerKm() {
-        let hours = parseInt(this.hourfield.value) || 0;
         let minutes = parseInt(this.minutefield.value) || 0;
         let seconds = parseInt(this.secondfield.value) || 0;
-        let timeInSeconds = hours * 3600 + minutes * 60 + seconds;
+        let timeInSeconds = minutes * 60 + seconds;
         let distanceInKm = toKm(1, this.unitfield.value)
         return timeInSeconds / distanceInKm;
     }
@@ -114,21 +113,20 @@ class PaceInput {
     }
 
     clear() {
-        this.hourfield.value = '';
         this.minutefield.value = '';
         this.secondfield.value = '';
         recalculate();
     }
 
     onUpdate(event) {
-        let newValue = `${this.hourfield.value}:${this.minutefield.value}:${this.secondfield.value}`
+        let newValue = `${this.minutefield.value}:${this.secondfield.value}`
         if (this._derived && newValue !== this.value) {
             this.derived = false;
         }
         this.value = newValue;
         // if new value is not empty, zet all other fields to zero
         if (event.target.value !== '') {
-            for (let element of [this.hourfield, this.minutefield, this.secondfield]) {
+            for (let element of [this.minutefield, this.secondfield]) {
                 if (element.value === '') {
                     element.value = '00';
                 }
@@ -148,13 +146,11 @@ class PaceInput {
         let distanceKm = distanceInput.getDistanceInKm();
         let distance = fromKm(distanceKm, this.unitfield.value)
         let pace = time / distance;
-        let hours = Math.floor(pace / 3600);
-        let minutes = Math.floor((pace - hours * 3600) / 60);
-        let seconds = Math.floor(pace - hours * 3600 - minutes * 60);
-        this.hourfield.value = padZero(hours, 2)
+        let minutes = Math.floor(pace / 60);
+        let seconds = Math.floor(pace - minutes * 60);
         this.minutefield.value = padZero(minutes, 2);
         this.secondfield.value = padZero(seconds, 2);
-        this.value = `${this.hourfield.value}:${this.minutefield.value}:${this.secondfield.value}`
+        this.value = `${this.minutefield.value}:${this.secondfield.value}`
     }
 }
 
@@ -171,7 +167,7 @@ class TimeInput {
         zeropad(this.hourfield, this.minutefield, this.secondfield);
         parentFocus(this.timefield, this.hourfield, this.minutefield, this.secondfield);
         onBlur(this.onUpdate.bind(this), this.hourfield, this.minutefield, this.secondfield);
-        onClear(this.clear.bind(this), this.hourfield, this.minutefield, this.secondfield);
+        onClear(this.clear.bind(this), true, this.hourfield, this.minutefield, this.secondfield);
     }
 
     get isEmpty() {
@@ -256,12 +252,19 @@ function onBlur(fn, ...elements) {
     }
 }
 
-function onClear(fn, ...elements) {
+function onClear(fn, includeDot, ...elements) {
     // if Esc is pressed on one of the elements, call fn
     for (let element of elements) {
         element.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
+            if (event.key === 'Escape' || event.key === '-' || includeDot && event.key === '.') {
                 fn(event);
+                element.blur();
+            }
+        });
+        // prevent - from being entered
+        element.addEventListener('keypress', function (event) {
+            if (event.key === '-' || includeDot && event.key === '.') {
+                event.preventDefault();
             }
         });
     }
@@ -323,7 +326,6 @@ const timeInput = new TimeInput(
     document.getElementById('time_seconds'));
 const paceInput = new PaceInput(
     document.getElementById('pace_time'),
-    document.getElementById('pace_hours'),
     document.getElementById('pace_minutes'),
     document.getElementById('pace_seconds'),
     document.getElementById('pace_unit'));
