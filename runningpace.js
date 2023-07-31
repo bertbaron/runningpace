@@ -258,21 +258,21 @@ function onClear(fn, includeDot, ...elements) {
                 element.blur();
             }
         });
-        element.addEventListener('mousedown', function (event) {
-            longPressTimeout = setTimeout(function () {
-                fn(event);
-                element.blur();
-                longPressed = true;
-            }, 500);
-        });
-        element.addEventListener('mouseup', function (event) {
-            clearTimeout(longPressTimeout);
-            console.log(`Mouseup`)
-        });
-        element.addEventListener('mouseleave', function (event) {
-            clearTimeout(longPressTimeout);
-            console.log(`Mouseleave`)
-        });
+        for (let eventType of ['mousedown', 'touchstart']) {
+            element.addEventListener(eventType, function (event) {
+                longPressTimeout = setTimeout(function () {
+                    fn(event);
+                    element.blur();
+                    longPressed = true;
+                }, 500);
+            });
+        }
+        for (let eventType of ['mouseup', 'touchend', 'mouseleave', 'touchcancel']) {
+            element.addEventListener(eventType, function (event) {
+                console.log(eventType)
+                clearTimeout(longPressTimeout);
+            });
+        }
         element.addEventListener('click', function (event) {
             if (longPressed) {
                 console.log('Click!');
