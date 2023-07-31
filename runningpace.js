@@ -260,7 +260,6 @@ function onClear(fn, includeDot, ...elements) {
                 element.blur();
             }
         });
-        // prevent - from being entered
         element.addEventListener('keypress', function (event) {
             if (event.key === '-' || includeDot && event.key === '.') {
                 event.preventDefault();
