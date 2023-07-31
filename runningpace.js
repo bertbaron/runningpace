@@ -59,7 +59,6 @@ class DistanceInput {
     }
 
     calculate() {
-        console.log("calculating distance")
         let timeInSeconds = timeInput.getTimeInSeconds();
         let paceInSecondsPerKm = paceInput.getPaceInSecondsPerKm();
         let distanceInKm = timeInSeconds / paceInSecondsPerKm;
@@ -72,7 +71,6 @@ class DistanceInput {
 class PaceInput {
     constructor(timefield, minutefield, secondfield, unitfield) {
         this.timefield = timefield; // the wrapper element
-        // this.hourfield = hourfield;
         this.minutefield = minutefield;
         this.secondfield = secondfield;
         this.unitfield = unitfield;
@@ -141,7 +139,6 @@ class PaceInput {
     }
 
     calculate() {
-        console.log("calculating pace")
         let time = timeInput.getTimeInSeconds();
         let distanceKm = distanceInput.getDistanceInKm();
         let distance = fromKm(distanceKm, this.unitfield.value)
@@ -220,7 +217,6 @@ class TimeInput {
     }
 
     calculate() {
-        console.log("calculating time")
         let pace = paceInput.getPaceInSecondsPerKm();
         let distanceKm = distanceInput.getDistanceInKm();
         let time = pace * distanceKm;
@@ -283,6 +279,8 @@ function selectOnFocus(...elements) {
     for (let element of elements) {
         element.addEventListener('focus', function (event) {
             element.select();
+        });
+        element.addEventListener('click', function (event) {
             event.preventDefault();
         });
     }
