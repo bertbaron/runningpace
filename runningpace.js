@@ -280,7 +280,7 @@ function selectOnFocus(...elements) {
         element.addEventListener('focus', function (event) {
             element.select();
         });
-        element.addEventListener('click', function (event) {
+        element.addEventListener('contextmenu', function (event) {
             event.preventDefault();
         });
     }
