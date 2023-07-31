@@ -281,8 +281,9 @@ function onClear(fn, includeDot, ...elements) {
 
 function selectOnFocus(...elements) {
     for (let element of elements) {
-        element.addEventListener('focus', function () {
+        element.addEventListener('focus', function (event) {
             element.select();
+            event.preventDefault();
         });
     }
 }
