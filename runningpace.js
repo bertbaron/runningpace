@@ -248,31 +248,65 @@ function onBlur(fn, ...elements) {
     }
 }
 
+let longPressTimeout;
+let longPressed = false;
 function onClear(fn, includeDot, ...elements) {
     for (let element of elements) {
         element.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape' || event.key === '-' || includeDot && event.key === '.') {
+            if (event.key === 'Escape') {
                 fn(event);
                 element.blur();
             }
         });
-        element.addEventListener('keypress', function (event) {
-            if (event.key === '-' || includeDot && event.key === '.') {
-                event.preventDefault();
-            }
-        });
-
-        // It looks like this is needed for some mobile devices
-        element.addEventListener('input', function (event) {
-            if (element.value.includes('-') || includeDot && element.value.includes('.')) {
-                console.log(`replacing`)
-                element.value = element.value.replace('-', '').replace('.', '');
-                event.preventDefault();
+        element.addEventListener('mousedown', function (event) {
+            longPressTimeout = setTimeout(function () {
                 fn(event);
                 element.blur();
+                longPressed = true;
+            }, 500);
+        });
+        element.addEventListener('mouseup', function (event) {
+            clearTimeout(longPressTimeout);
+            console.log(`Mouseup`)
+        });
+        element.addEventListener('mouseleave', function (event) {
+            clearTimeout(longPressTimeout);
+            console.log(`Mouseleave`)
+        });
+        element.addEventListener('click', function (event) {
+            if (longPressed) {
+                console.log('Click!');
+                event.preventDefault();
+                element.blur();
+                longPressed = false;
             }
         });
     }
+
+    // for (let element of elements) {
+    //     element.addEventListener('keydown', function (event) {
+    //         if (event.key === 'Escape' || event.key === '-' || includeDot && event.key === '.') {
+    //             fn(event);
+    //             element.blur();
+    //         }
+    //     });
+    //     element.addEventListener('keypress', function (event) {
+    //         if (event.key === '-' || includeDot && event.key === '.') {
+    //             event.preventDefault();
+    //         }
+    //     });
+    //
+    //     // It looks like this is needed for some mobile devices
+    //     element.addEventListener('input', function (event) {
+    //         if (element.value.includes('-') || includeDot && element.value.includes('.')) {
+    //             console.log(`replacing`)
+    //             element.value = element.value.replace('-', '').replace('.', '');
+    //             event.preventDefault();
+    //             fn(event);
+    //             element.blur();
+    //         }
+    //     });
+    // }
 }
 
 function selectOnFocus(...elements) {
