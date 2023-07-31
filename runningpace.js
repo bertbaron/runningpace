@@ -81,7 +81,7 @@ class PaceInput {
         zeropad(this.minutefield, this.secondfield);
         parentFocus(this.timefield, this.minutefield, this.secondfield);
         onBlur(this.onUpdate.bind(this), this.minutefield, this.secondfield);
-        onClear(this.clear.bind(this), this.timefield, this.minutefield, this.secondfield);
+        onClear(this.clear.bind(this), this.timefield);
         this.unitfield.addEventListener('change', this.onUnitUpdate.bind(this));
     }
 
@@ -164,7 +164,7 @@ class TimeInput {
         zeropad(this.hourfield, this.minutefield, this.secondfield);
         parentFocus(this.timefield, this.hourfield, this.minutefield, this.secondfield);
         onBlur(this.onUpdate.bind(this), this.hourfield, this.minutefield, this.secondfield);
-        onClear(this.clear.bind(this), this.timefield, this.hourfield, this.minutefield, this.secondfield);
+        onClear(this.clear.bind(this), this.timefield);
     }
 
     get isEmpty() {
@@ -260,8 +260,11 @@ function onClear(fn, ...elements) {
         });
         for (let eventType of ['mousedown', 'touchstart']) {
             element.addEventListener(eventType, function (event) {
+                console.log(`event: ${eventType} on ${event.target.id}, setting timeout`)
+                clearTimeout(longPressTimeout) // for robustness
                 longPressTimeout = setTimeout(function () {
                     fn(event);
+                    console.log(`long-press timeout, blurring`)
                     element.blur();
                     longPressed = true;
                 }, 500);
@@ -269,13 +272,17 @@ function onClear(fn, ...elements) {
         }
         for (let eventType of ['mouseup', 'touchend', 'mouseleave', 'touchcancel']) {
             element.addEventListener(eventType, function (event) {
-                console.log(eventType)
+                console.log(`event: ${eventType}, canceling timeout`)
+                // if (longPressed) {
+                //     element.blur(); // FIXME mark as done, but with longPressed=false event below is not triggered
+                // }
                 clearTimeout(longPressTimeout);
             });
         }
         element.addEventListener('click', function (event) {
+            console.log(`event: click`)
             if (longPressed) {
-                console.log('Click!');
+                console.log(`longPressed, blurring`)
                 event.preventDefault();
                 element.blur();
                 longPressed = false;
