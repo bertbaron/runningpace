@@ -21,6 +21,7 @@ body {
 }
 
 .app {
+    font-size: 130%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -56,7 +57,7 @@ label {
 }
 
 .input-row .col-1 {
-    width: 9rch;
+    width: 8ch;
     /*border: cornflowerblue solid 1px;*/
     /*justify-content: left;*/
 }
@@ -67,7 +68,7 @@ label {
     /*margin-right: 8px;*/
 }
 .input-row .col-3 {
-    width: 13rch;
+    width: 15rch;
 }
 
 .time-field {
@@ -80,7 +81,7 @@ label {
     outline: none;
     background-color: transparent;
     font-family: inherit;
-    /*font-size: inherit;*/
+    font-size: inherit;
     text-align: center;
     width: 2ch;
     padding: 0;
@@ -96,6 +97,10 @@ label {
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 5px;
+}
+
+select {
+    font-size: smaller;
 }
 
 .focus {
@@ -120,6 +125,10 @@ label {
 #distance {
     text-align: right;
     font-size: inherit;
+}
+
+.note {
+    font-size: smaller;
 }
 
 kbd {
