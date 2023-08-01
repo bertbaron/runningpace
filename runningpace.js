@@ -250,7 +250,7 @@ function onBlur(fn, ...elements) {
 
 let longPressTimeout;
 let longPressed = false;
-// let releaseTimestamp;
+let releaseTimestamp;
 
 function onClear(fn, ...elements) {
     for (let element of elements) {
@@ -282,19 +282,19 @@ function onClear(fn, ...elements) {
                     event.preventDefault();
                     element.blur();
                     longPressed = false;
-                    // releaseTimestamp = event.timeStamp;
+                    releaseTimestamp = event.timeStamp;
                 }
                 clearTimeout(longPressTimeout);
             });
         }
-        // element.addEventListener('click', function (event) {
-        //     console.log(`event: click @ ${event.timeStamp}`)
-            // if (event.timeStamp === releaseTimestamp) {
-            //     console.log(`click immediately after release, blurring`)
-            //     event.preventDefault();
-            //     element.blur();
-            // }
-        // });
+        element.addEventListener('click', function (event) {
+            // console.log(`event: click @ ${event.timeStamp}`)
+            if (event.timeStamp === releaseTimestamp) {
+                console.log(`click immediately after release, blurring again`)
+                event.preventDefault();
+                element.blur();
+            }
+        });
     }
 }
 
