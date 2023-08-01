@@ -1,5 +1,12 @@
 :root {
     --sans-font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 130%;
+}
+
+@media (max-width: 480px) {
+    :root {
+        font-size: 100%;
+    }
 }
 
 body {
@@ -20,8 +27,14 @@ body {
     font-weight: inherit;
 }
 
+@media (max-width: 550px) {
+    .heading {
+        font-size: 80%;
+        line-height: 0.7;
+    }
+}
+
 .app {
-    font-size: 130%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -68,7 +81,7 @@ label {
     /*margin-right: 8px;*/
 }
 .input-row .col-3 {
-    width: 15rch;
+    width: 12rch;
 }
 
 .time-field {
