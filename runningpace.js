@@ -3,7 +3,8 @@ const UNIT_FACT = {
     'mile': 1.609344,
     'meter': 0.001,
     'yard': 0.0009144,
-    'foot': 0.0003048
+    'foot': 0.0003048,
+    'marathon': 42.195
 }
 
 class Input {
