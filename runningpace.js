@@ -342,6 +342,7 @@ const paceInput = new PaceInput(
 const distanceInput = new DistanceInput(
     document.getElementById('distance'),
     document.getElementById('distance_unit'));
+const invisibleFocusCatcher = document.getElementById('invisibleFocusCatcher');
 
 const INPUTS = [timeInput, paceInput, distanceInput];
 
@@ -387,3 +388,11 @@ function toKm(distance, unit) {
 function fromKm(distance, unit) {
     return distance / UNIT_FACT[unit];
 }
+
+// Prevent keyboard from popping up on mobile
+invisibleFocusCatcher.addEventListener('focus', function () {
+    invisibleFocusCatcher.readOnly = true;
+});
+invisibleFocusCatcher.addEventListener('blur', function () {
+    invisibleFocusCatcher.readOnly = false;
+});
