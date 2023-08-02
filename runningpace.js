@@ -77,9 +77,7 @@ class PaceInput {
         this._derived = false;
         this.value = `${this.minutefield.value}:${this.secondfield.value}`
 
-        selectOnFocus(this.minutefield, this.secondfield);
-        zeropad(this.minutefield, this.secondfield);
-        parentFocus(this.timefield, this.minutefield, this.secondfield);
+        configureTimeFields(this.timefield, this.minutefield, this.secondfield);
         onBlur(this.onUpdate.bind(this), this.minutefield, this.secondfield);
         onClear(this.clear.bind(this), this.timefield, this.minutefield, this.secondfield);
         this.unitfield.addEventListener('change', this.onUnitUpdate.bind(this));
@@ -160,9 +158,7 @@ class TimeInput {
         this._derived = false;
         this.value = `${this.hourfield.value}:${this.minutefield.value}:${this.secondfield.value}`
 
-        selectOnFocus(this.hourfield, this.minutefield, this.secondfield);
-        zeropad(this.hourfield, this.minutefield, this.secondfield);
-        parentFocus(this.timefield, this.hourfield, this.minutefield, this.secondfield);
+        configureTimeFields(this.timefield, this.hourfield, this.minutefield, this.secondfield);
         onBlur(this.onUpdate.bind(this), this.hourfield, this.minutefield, this.secondfield);
         onClear(this.clear.bind(this), this.timefield, this.hourfield, this.minutefield, this.secondfield);
     }
@@ -230,6 +226,37 @@ class TimeInput {
     }
 }
 
+function configureTimeFields(parentField, ...fields) {
+    selectOnFocus(...fields);
+    zeropad(...fields);
+    parentFocus(parentField, ...fields);
+
+    // clean up input and move focus to next field if ':' is entered
+    for (let i = 0; i < fields.length; i++) {
+        const element = fields[i];
+        const nextElement = i < fields.length - 1 ? fields[i + 1] : null;
+        if (nextElement) {
+            console.log(`Focus on ':' ${element.id} -> ${nextElement.id}`)
+        }
+        element.addEventListener('input', function (event) {
+            let moveFocus = false;
+            if (nextElement && element.value.includes(':')) {
+                moveFocus = true;
+            }
+            console.log(`Cleaning ${element.id}`)
+            element.value = element.value.replace(/\D/g, '');
+            while (parseInt(element.value) > 60) {
+                element.value = element.value.slice(0, -1);
+            }
+
+            if (moveFocus) {
+                element.blur();
+                nextElement.focus();
+            }
+        });
+    }
+}
+
 // Add and removes focus class to parent element if one of the child elements has focus
 function parentFocus(parent, ...elements) {
     for (let element of elements) {
@@ -290,7 +317,6 @@ function onClear(fn, ...elements) {
         element.addEventListener('click', function (event) {
             // console.log(`event: click @ ${event.timeStamp}`)
             if (event.timeStamp === releaseTimestamp) {
-                console.log(`click immediately after release, blurring again`)
                 event.preventDefault();
                 element.blur();
             }
