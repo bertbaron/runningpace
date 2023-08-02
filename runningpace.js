@@ -6,8 +6,29 @@ const UNIT_FACT = {
     'foot': 0.0003048
 }
 
-class DistanceInput {
+class Input {
+    constructor(inputField) {
+        this.inputField = inputField;
+        this._derived = false;
+    }
+
+    set derived(value) {
+        this._derived = value;
+        if (value) {
+            this.inputField.classList.add('derived');
+        } else {
+            this.inputField.classList.remove('derived');
+        }
+    }
+
+    get derived() {
+        return this._derived;
+    }
+}
+
+class DistanceInput extends Input {
     constructor(distancefield, unitfield) {
+        super(distancefield);
         this.distancefield = distancefield;
         this.unitfield = unitfield;
         this._derived = false;
@@ -26,19 +47,6 @@ class DistanceInput {
     getDistanceInKm() {
         let distance = parseFloat(this.distancefield.value) || 0;
         return toKm(distance, this.unitfield.value);
-    }
-
-    set derived(value) {
-        this._derived = value;
-        if (value) {
-            this.distancefield.classList.add('derived');
-        } else {
-            this.distancefield.classList.remove('derived');
-        }
-    }
-
-    get derived() {
-        return this._derived;
     }
 
     clear() {
@@ -68,8 +76,9 @@ class DistanceInput {
     }
 }
 
-class PaceInput {
+class PaceInput extends Input {
     constructor(timefield, minutefield, secondfield, unitfield) {
+        super(timefield);
         this.timefield = timefield; // the wrapper element
         this.minutefield = minutefield;
         this.secondfield = secondfield;
@@ -93,19 +102,6 @@ class PaceInput {
         let timeInSeconds = minutes * 60 + seconds;
         let distanceInKm = toKm(1, this.unitfield.value)
         return timeInSeconds / distanceInKm;
-    }
-
-    set derived(value) {
-        this._derived = value;
-        if (value) {
-            this.timefield.classList.add('derived');
-        } else {
-            this.timefield.classList.remove('derived');
-        }
-    }
-
-    get derived() {
-        return this._derived;
     }
 
     clear() {
@@ -149,8 +145,9 @@ class PaceInput {
     }
 }
 
-class TimeInput {
+class TimeInput extends Input {
     constructor(timefield, hourfield, minutefield, secondfield) {
+        super(timefield);
         this.timefield = timefield; // the wrapper element
         this.hourfield = hourfield;
         this.minutefield = minutefield;
@@ -174,19 +171,6 @@ class TimeInput {
         return hours * 3600 + minutes * 60 + seconds;
     }
 
-    set derived(value) {
-        this._derived = value;
-        if (value) {
-            this.timefield.classList.add('derived');
-        } else {
-            this.timefield.classList.remove('derived');
-        }
-    }
-
-    get derived() {
-        return this._derived;
-    }
-
     clear() {
         this.hourfield.value = '';
         this.minutefield.value = '';
@@ -200,7 +184,6 @@ class TimeInput {
             this.derived = false;
         }
         this.value = newValue;
-        // if new value is not empty, zet all other fields to zero
         if (event.target.value !== '') {
             for (let element of [this.hourfield, this.minutefield, this.secondfield]) {
                 if (element.value === '') {
@@ -235,15 +218,11 @@ function configureTimeFields(parentField, ...fields) {
     for (let i = 0; i < fields.length; i++) {
         const element = fields[i];
         const nextElement = i < fields.length - 1 ? fields[i + 1] : null;
-        if (nextElement) {
-            console.log(`Focus on ':' ${element.id} -> ${nextElement.id}`)
-        }
         element.addEventListener('input', function (event) {
             let moveFocus = false;
             if (nextElement && element.value.includes(':')) {
                 moveFocus = true;
             }
-            console.log(`Cleaning ${element.id}`)
             element.value = element.value.replace(/\D/g, '');
             while (parseInt(element.value) > 60) {
                 element.value = element.value.slice(0, -1);
