@@ -3,12 +3,6 @@
     font-size: 130%;
 }
 
-@media (max-width: 480px) {
-    :root {
-        font-size: 100%;
-    }
-}
-
 body {
     margin: 0;
 }
@@ -22,15 +16,18 @@ body {
     font-weight: 400;
 }
 
+.heading .lead {
+    margin-bottom: 0;
+}
 .heading h1 {
     padding: 0;
     font-weight: inherit;
+    margin-top: 0.2em;
 }
 
 @media (max-width: 550px) {
     .heading {
-        font-size: 80%;
-        line-height: 0.7;
+        font-size: 75%;
     }
 }
 
@@ -70,7 +67,7 @@ label {
 }
 
 .input-row .col-1 {
-    width: 8ch;
+    width: 8rch;
     /*border: cornflowerblue solid 1px;*/
     /*justify-content: left;*/
 }
@@ -151,6 +148,7 @@ select {
 
 .note {
     font-size: smaller;
+    font-family: var(--sans-font-family);
 }
 
 kbd {
@@ -160,4 +158,10 @@ kbd {
     border-radius: 3px;
     background-color: #f7f7f7;
     font-family: monospace;
+}
+
+footer {
+    font-family: var(--sans-font-family);
+    font-size: 60%;
+    text-align: center;
 }
