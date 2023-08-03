@@ -36,8 +36,7 @@ class DistanceInput extends Input {
         this.value = distancefield.value;
 
         selectOnFocus(this.distancefield);
-        onBlur(this.onUpdate.bind(this), this.distancefield);
-        onClear(this.clear.bind(this), this.distancefield);
+        configureInput(this, this.distancefield);
         this.unitfield.addEventListener('change', this.onUnitUpdate.bind(this));
     }
 
@@ -88,8 +87,7 @@ class PaceInput extends Input {
         this.value = `${this.minutefield.value}:${this.secondfield.value}`
 
         configureTimeFields(this.timefield, this.minutefield, this.secondfield);
-        onBlur(this.onUpdate.bind(this), this.minutefield, this.secondfield);
-        onClear(this.clear.bind(this), this.timefield, this.minutefield, this.secondfield);
+        configureInput(this, this.timefield, this.minutefield, this.secondfield)
         this.unitfield.addEventListener('change', this.onUnitUpdate.bind(this));
     }
 
@@ -157,8 +155,7 @@ class TimeInput extends Input {
         this.value = `${this.hourfield.value}:${this.minutefield.value}:${this.secondfield.value}`
 
         configureTimeFields(this.timefield, this.hourfield, this.minutefield, this.secondfield);
-        onBlur(this.onUpdate.bind(this), this.hourfield, this.minutefield, this.secondfield);
-        onClear(this.clear.bind(this), this.timefield, this.hourfield, this.minutefield, this.secondfield);
+        configureInput(this, this.timefield, this.hourfield, this.minutefield, this.secondfield);
     }
 
     get isEmpty() {
@@ -237,6 +234,11 @@ function configureTimeFields(parentField, ...fields) {
     }
 }
 
+function configureInput(input, ...fields) {
+    onInput(input.onUpdate.bind(input), ...fields);
+    onClear(input.clear.bind(input), ...fields);
+}
+
 // Add and removes focus class to parent element if one of the child elements has focus
 function parentFocus(parent, ...elements) {
     for (let element of elements) {
@@ -249,9 +251,9 @@ function parentFocus(parent, ...elements) {
     }
 }
 
-function onBlur(fn, ...elements) {
+function onInput(fn, ...elements) {
     for (let element of elements) {
-        element.addEventListener('blur', fn);
+        element.addEventListener('input', fn);
     }
 }
 
