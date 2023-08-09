@@ -4,7 +4,7 @@
     <title>Just a Running Pace Calculator</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <meta name="description" content="A simple, easy to use online and mobile friendly Running Pace Calculator to calculate Pace, Distance or Time in either Metric or Imperial units. Ad-free."/>
+    <meta name="description" content="A simple, easy to use ad-free online and mobile friendly Running Pace Calculator to calculate Pace (or Speed), Distance or Time in either Metric or Imperial units."/>
     <link rel="stylesheet" href="style.css"/>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -26,7 +26,7 @@
     <div class="container">
         <div class="input-row">
             <label class="col-1" for="distance">Distance</label>
-            <input class="col-2 input-field" type="text" inputmode="numeric" pattern="[0-9.]*" id="distance" maxLength="4"/>
+            <input class="col-2 input-field" type="text" inputmode="numeric" pattern="[0-9.]*" id="distance"/>
             <select class="col-3 input-field" id="distance_unit">
                 <option value="km">kilometers</option>
                 <option value="mile">miles</option>
@@ -37,15 +37,18 @@
             </select>
         </div>
         <div class="input-row">
-            <label class="col-1">Pace</label>
+            <label id="pacelabel" class="col-1">Pace</label>
             <div class="col-2 input-field time-field" id="pace_time">
                 <input class="digits zeropad" type="text" inputmode="numeric" pattern=[0-9]* id="pace_minutes" maxLength="3" placeholder="mm"/>
                 <span>:</span>
                 <input class="digits zeropad" type="text" inputmode="numeric" pattern=[0-9]* id="pace_seconds" maxLength="3" placeholder="ss"/>
             </div>
+            <input class="col-2 input-field hidden" type="text" inputmode="numeric" pattern="[0-9.]*" id="speed"/>
             <select class="col-3 input-field" id="pace_unit">
                 <option value="km">per km</option>
                 <option value="mile">per mile</option>
+                <option value="km/h">km/h</option>
+                <option value="mile/h">mph</option>
             </select>
         </div>
         <div class="input-row">

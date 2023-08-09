@@ -8,17 +8,19 @@ const UNIT_FACT = {
 }
 
 class Input {
-    constructor(inputField) {
-        this.inputField = inputField;
+    constructor(...inputFields) {
+        this.inputFields = inputFields;
         this._derived = false;
     }
 
     set derived(value) {
         this._derived = value;
-        if (value) {
-            this.inputField.classList.add('derived');
-        } else {
-            this.inputField.classList.remove('derived');
+        for (let inputField of this.inputFields) {
+            if (value) {
+                inputField.classList.add('derived');
+            } else {
+                inputField.classList.remove('derived');
+            }
         }
     }
 
@@ -77,17 +79,20 @@ class DistanceInput extends Input {
 }
 
 class PaceInput extends Input {
-    constructor(timefield, minutefield, secondfield, unitfield) {
-        super(timefield);
+    constructor(label, timefield, minutefield, secondfield, speedfield, unitfield) {
+        super(timefield, speedfield);
+        this.label = label;
+        this.speedmode = false;
         this.timefield = timefield; // the wrapper element
         this.minutefield = minutefield;
         this.secondfield = secondfield;
+        this.speedfield = speedfield;
         this.unitfield = unitfield;
         this._derived = false;
-        this.value = `${this.minutefield.value}:${this.secondfield.value}`
+        this.value = this.valueString();
 
         configureTimeFields(this.timefield, this.minutefield, this.secondfield);
-        configureInput(this, this.timefield, this.minutefield, this.secondfield)
+        configureInput(this, this.timefield, this.minutefield, this.secondfield, this.speedfield);
         this.unitfield.addEventListener('change', this.onUnitUpdate.bind(this));
     }
 
@@ -96,11 +101,17 @@ class PaceInput extends Input {
     }
 
     getPaceInSecondsPerKm() {
-        let minutes = parseInt(this.minutefield.value) || 0;
-        let seconds = parseInt(this.secondfield.value) || 0;
-        let timeInSeconds = minutes * 60 + seconds;
-        let distanceInKm = toKm(1, this.unitfield.value)
-        return timeInSeconds / distanceInKm;
+        if (this.speedmode) {
+            let speed = parseFloat(this.speedfield.value) || 0;
+            let speedKmh = toKmh(speed, this.unitfield.value);
+            return 3600 / speedKmh;
+        } else {
+            let minutes = parseInt(this.minutefield.value) || 0;
+            let seconds = parseInt(this.secondfield.value) || 0;
+            let timeInSeconds = minutes * 60 + seconds;
+            let distanceInKm = toKm(1, this.unitfield.value)
+            return timeInSeconds / distanceInKm;
+        }
     }
 
     clear() {
@@ -110,7 +121,7 @@ class PaceInput extends Input {
     }
 
     onUpdate(event) {
-        let newValue = `${this.minutefield.value}:${this.secondfield.value}`
+        let newValue = this.valueString();
         if (this._derived && newValue !== this.value) {
             this.derived = false;
         }
@@ -128,19 +139,53 @@ class PaceInput extends Input {
     }
 
     onUnitUpdate(event) {
+        let unit = event.target.value;
+        let newSpeedMode = !(unit in UNIT_FACT);
+        if (newSpeedMode !== this.speedmode) {
+            if (newSpeedMode) {
+                this.timefield.classList.add('hidden');
+                this.speedfield.classList.remove('hidden');
+                this.speedfield.hidden = false;
+                this.label.textContent = 'Speed';
+                if (!this.derived) {
+                    this.speedfield.value = '';
+                    // TODO convert current pace to speed (requires remembering previous unit)
+                }
+            } else {
+                this.timefield.classList.remove('hidden');
+                this.speedfield.classList.add('hidden');
+                this.label.textContent = 'Pace';
+                if (!this.derived) {
+                    // TODO convert current speed to pace (requires remembering previous unit)
+                    this.minutefield.value = '';
+                    this.secondfield.value = '';
+                }
+            }
+            this.speedmode = newSpeedMode;
+        }
         recalculate();
     }
 
     calculate() {
         let time = timeInput.getTimeInSeconds();
         let distanceKm = distanceInput.getDistanceInKm();
-        let distance = fromKm(distanceKm, this.unitfield.value)
-        let pace = time / distance;
-        let minutes = Math.floor(pace / 60);
-        let seconds = Math.floor(pace - minutes * 60);
-        this.minutefield.value = padZero(minutes, 2);
-        this.secondfield.value = padZero(seconds, 2);
-        this.value = `${this.minutefield.value}:${this.secondfield.value}`
+        if (this.speedmode) {
+            let speed = distanceKm / time * 3600;
+            speed /= UNIT_FACT[distanceUnit(this.unitfield.value)];
+            this.speedfield.value = speed.toFixed(2).replace(/\.?0+$/, '');
+        } else {
+            let distance = fromKm(distanceKm, this.unitfield.value)
+            let pace = time / distance;
+            let minutes = Math.floor(pace / 60);
+            let seconds = Math.floor(pace - minutes * 60);
+            this.minutefield.value = padZero(minutes, 2);
+            this.secondfield.value = padZero(seconds, 2);
+        }
+        this.value = this.valueString();
+    }
+
+    valueString() {
+        return this.speedmode ? this.speedfield.value : `${this.minutefield.value}:${this.secondfield.value}`
     }
 }
 
@@ -337,9 +382,11 @@ const timeInput = new TimeInput(
     document.getElementById('time_minutes'),
     document.getElementById('time_seconds'));
 const paceInput = new PaceInput(
+    document.getElementById('pacelabel'),
     document.getElementById('pace_time'),
     document.getElementById('pace_minutes'),
     document.getElementById('pace_seconds'),
+    document.getElementById('speed'),
     document.getElementById('pace_unit'));
 const distanceInput = new DistanceInput(
     document.getElementById('distance'),
@@ -384,11 +431,26 @@ function getDerivedInput() {
 }
 
 function toKm(distance, unit) {
-    return distance * UNIT_FACT[unit];
+    return distance * UNIT_FACT[distanceUnit(unit)];
 }
 
 function fromKm(distance, unit) {
-    return distance / UNIT_FACT[unit];
+    return distance / UNIT_FACT[distanceUnit(unit)];
+}
+
+function toKmh(speed, unit) {
+    return speed * UNIT_FACT[distanceUnit(unit)];
+}
+
+function fromKmh(speed, unit) {
+    return speed / UNIT_FACT[distanceUnit(unit)];
+}
+
+function distanceUnit(unit) {
+    if (unit.includes('/')) {
+        return unit.split('/')[0];
+    }
+    return unit;
 }
 
 // Prevent keyboard from popping up on mobile
